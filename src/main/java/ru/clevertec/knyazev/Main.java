@@ -3,10 +3,15 @@ package ru.clevertec.knyazev;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.clevertec.knyazev.config.AppConfig;
+import ru.clevertec.knyazev.dao.ServiceDAO;
 import ru.clevertec.knyazev.dao.exception.DAOException;
 import ru.clevertec.knyazev.data.PersonDTO;
+import ru.clevertec.knyazev.entity.Service;
 import ru.clevertec.knyazev.service.PersonService;
 import ru.clevertec.knyazev.service.exception.ServiceException;
+
+import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 public class Main {
