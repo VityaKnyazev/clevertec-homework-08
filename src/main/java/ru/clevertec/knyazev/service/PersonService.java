@@ -15,7 +15,7 @@ public interface PersonService {
     /**
      * Get person DTO by person id
      *
-     * @param personId
+     * @param personId person id
      * @return Person data transfer object
      * @throws ServiceException when person not found
      */

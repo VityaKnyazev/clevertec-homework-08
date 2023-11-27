@@ -33,13 +33,36 @@ public class AppConfig {
     }
 
     @Bean
-    AbstractCacheFactory defaultCacheFactory() {
-        return new DefaultCacheFactory(yamlParser());
+    CacheProperties cacheProperties(YAMLParser yamlParser) {
+        return CacheProperties.builder()
+                .algorithm(yamlParser.getProperty("cache", "algorithm"))
+                .size(Integer.valueOf(
+                        yamlParser.getProperty("cache", "size")))
+                .build();
     }
 
     @Bean
-    Cache<UUID, Person> personCache() {
-        return defaultCacheFactory().initCache();
+    DataSourceProperties dataSourceProperties(YAMLParser yamlParser) {
+        return DataSourceProperties.builder()
+                .driverClassName(yamlParser.getProperty("datasource", "driverClassName"))
+                .jdbcUrl(yamlParser.getProperty("datasource", "jdbcUrl"))
+                .username(yamlParser.getProperty("datasource", "username"))
+                .password(yamlParser.getProperty("datasource", "password"))
+                .maxPoolSize(Integer.parseInt(yamlParser.getProperty("datasource",
+                                                                      "maxPoolSize")))
+                .connectionTimeout(Long.parseLong(yamlParser.getProperty("datasource",
+                                                                          "connectionTimeout")))
+                .build();
+    }
+
+    @Bean
+    AbstractCacheFactory defaultCacheFactory(CacheProperties cacheProperties) {
+        return new DefaultCacheFactory(cacheProperties.getAlgorithm(), cacheProperties.getSize());
+    }
+
+    @Bean
+    Cache<UUID, Person> personCache(AbstractCacheFactory defaultCacheFactory) {
+        return defaultCacheFactory.initCache();
     }
 
     @Bean
@@ -51,22 +74,20 @@ public class AppConfig {
     }
 
     @Bean
-    DataSource hikariDataSource() {
-        YAMLParser yamlParser = yamlParser();
-
+    DataSource hikariDataSource(DataSourceProperties dataSourceProperties) {
         HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setDriverClassName(yamlParser.getProperty("datasource", "driverClassName"));
-        hikariConfig.setJdbcUrl(yamlParser.getProperty("datasource", "jdbcUrl"));
-        hikariConfig.setUsername(yamlParser.getProperty("datasource", "username"));
-        hikariConfig.setPassword(yamlParser.getProperty("datasource", "password"));
-        hikariConfig.setMaximumPoolSize(Integer.parseInt(yamlParser.getProperty("datasource", "maxPoolSize")));
-        hikariConfig.setConnectionTimeout(Long.parseLong(yamlParser.getProperty("datasource", "connectionTimeout")));
+        hikariConfig.setDriverClassName(dataSourceProperties.getDriverClassName());
+        hikariConfig.setJdbcUrl(dataSourceProperties.getJdbcUrl());
+        hikariConfig.setUsername(dataSourceProperties.getUsername());
+        hikariConfig.setPassword(dataSourceProperties.getPassword());
+        hikariConfig.setMaximumPoolSize(dataSourceProperties.getMaxPoolSize());
+        hikariConfig.setConnectionTimeout(dataSourceProperties.getConnectionTimeout());
 
         return new HikariDataSource(hikariConfig);
     }
 
     @Bean
-    JdbcTemplate jdbcTemplate() {
-        return new JdbcTemplate(hikariDataSource());
+    JdbcTemplate jdbcTemplate(DataSource hikariDataSource) {
+        return new JdbcTemplate(hikariDataSource);
     }
 }

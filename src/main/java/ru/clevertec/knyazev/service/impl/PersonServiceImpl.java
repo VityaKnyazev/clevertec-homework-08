@@ -51,7 +51,7 @@ public class PersonServiceImpl implements PersonService {
         }
 
         Person person = personDAOImpl.findById(personId)
-                .orElseThrow(() -> new ServiceException());
+                .orElseThrow(ServiceException::new);
 
         return personMapperImpl.toPersonDTO(person);
     }

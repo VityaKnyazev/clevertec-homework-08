@@ -17,26 +17,26 @@ import java.util.UUID;
  */
 @Builder
 public record PersonDTO(
-        /**
+        /*
          * id may be null or not
          */
         UUID id,
 
-        /**
+        /*
          * name must be not null from 3 to 10 symbols
          */
         @NotNull(message = "Person name must be not null")
         @Size(min = 3, max = 10, message = "Person name must contains from 3 to 10 symbols")
         String name,
 
-        /**
+        /*
          * surname must be not null from 3 to 20 symbols
          */
         @NotNull(message = "Person surname must be not null")
         @Size(min = 3, max = 20, message = "Person surname must contains from 3 to 20 symbols")
         String surname,
 
-        /**
+        /*
          * email must be validated of pattern and not null, must be from 5 to 45 symbols
          */
         @NotNull(message = "Person email must be not null")
@@ -44,14 +44,14 @@ public record PersonDTO(
         @Size(min = 5, max = 45, message = "Person email must contains from 5 to 45 symbols")
         String email,
 
-        /**
+        /*
          *  citizenship must be not null from 3 to 25 symbols
          */
         @NotNull(message = "Person citizenship must be not null")
         @Size(min = 3, max = 25, message = "Person citizenship must contains from 3 to 10 symbols")
         String citizenship,
 
-        /**
+        /*
          * Age must be not null and positive from 0 to 150
          */
         @NotNull(message = "Person age must be not null")

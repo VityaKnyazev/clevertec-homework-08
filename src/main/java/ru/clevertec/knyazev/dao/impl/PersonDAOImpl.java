@@ -137,9 +137,7 @@ public class PersonDAOImpl implements PersonDAO {
     public void delete(UUID personId) {
 
         try {
-            findById(personId).ifPresent(p -> {
-                jdbcTemplate.update(DELETE, personId);
-            });
+            findById(personId).ifPresent(p -> jdbcTemplate.update(DELETE, personId));
         } catch (DataAccessException e) {
             throw new DAOException(e);
         }
