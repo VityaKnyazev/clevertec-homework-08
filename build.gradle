@@ -8,6 +8,8 @@ version = '1.0-SNAPSHOT'
 
 ext {
     snakeyamlVersion = '2.1'
+
+    itextPDFVersion = '8.0.2'
 }
 
 repositories {
@@ -15,6 +17,8 @@ repositories {
 }
 
 dependencies {
+
+    implementation "com.itextpdf:itext7-core:$itextPDFVersion"
 
     implementation "org.yaml:snakeyaml:$snakeyamlVersion"
 
