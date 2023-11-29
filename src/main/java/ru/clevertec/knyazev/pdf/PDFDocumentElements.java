@@ -7,7 +7,7 @@ import com.itextpdf.layout.element.Table;
  * Represents simple methods for creating pdf elements (paragraph, table, etc.)
  * and filling it with data
  */
-public sealed interface PDFDocumentElements permits PDFDocument {
+public sealed interface PDFDocumentElements permits AbstractPDFDocument {
 
     default Paragraph createParagraph(String text) {
         Paragraph paragraph = new Paragraph(text);
