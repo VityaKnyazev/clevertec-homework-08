@@ -9,6 +9,8 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import ru.clevertec.knyazev.pdf.exception.PDFDocumentException;
 
 import java.io.File;
@@ -17,7 +19,12 @@ import java.io.IOException;
 /**
  * Represents abstraction for working with pdf document (creating, adding data, closing)
  */
+
+@RequiredArgsConstructor
 public non-sealed abstract class AbstractPDFDocument implements PDFDocumentElements {
+
+    @Getter
+    protected final String pdfPath;
 
     /**
      * Create document using existing pdf document path with template and
@@ -72,6 +79,14 @@ public non-sealed abstract class AbstractPDFDocument implements PDFDocumentEleme
             throw new PDFDocumentException(e);
         }
     }
+
+    /**
+     * Create pdf document for working with
+     *
+     * @return pdf document
+     * @throws PDFDocumentException
+     */
+    public abstract Document createDocument() throws  PDFDocumentException;
 
     /**
      * Close existing pdf document
