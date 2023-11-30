@@ -33,7 +33,7 @@ public class Main {
         try {
             PersonDTO savedPersonDTO = personServiceImpl.add(personDTO);
 
-            log.info("Person DTO from cache:%n%s", personServiceImpl.get(savedPersonDTO.id()).toXML());
+            log.info("Person DTO from cache: {}", personServiceImpl.get(savedPersonDTO.id()).toXML());
 
             PersonDTO updatingPersonDTO = PersonDTO.builder()
                     .id(savedPersonDTO.id())

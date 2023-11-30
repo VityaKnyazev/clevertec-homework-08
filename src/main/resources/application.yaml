@@ -10,3 +10,8 @@ datasource:
 cache:
    algorithm: LFU
    size: 5
+pdf:
+   templatePath: pdf/tmpl/template.pdf
+   resultPath: src/main/resources/pdf
+   documentFontPath: fonts/times.ttf
+   documentFontEncoding: CP1251

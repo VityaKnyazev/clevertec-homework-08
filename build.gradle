@@ -16,6 +16,8 @@ ext {
 
     snakeyamlVersion = '2.1'
 
+    itextPDFVersion = '8.0.2'
+
     hibernateValidatorVersion = '8.0.1.Final'
 
     mapStructVersion = '1.5.5.Final'
@@ -27,6 +29,7 @@ ext {
     piocliVersion = '4.7.5'
 
     mockitoVersion = '5.6.0'
+
     assertjVersion = '3.24.2'
     junitVersion = '5.9.2'
 }
@@ -44,6 +47,8 @@ dependencies {
     implementation "com.zaxxer:HikariCP:$hikariCpVersion"
 
     implementation "org.yaml:snakeyaml:$snakeyamlVersion"
+
+    implementation "com.itextpdf:itext7-core:$itextPDFVersion"
 
     implementation "org.hibernate.validator:hibernate-validator:$hibernateValidatorVersion"
 
@@ -63,7 +68,7 @@ dependencies {
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-    testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
 }
 
 java {
