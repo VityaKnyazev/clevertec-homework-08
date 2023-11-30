@@ -12,10 +12,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import ru.clevertec.knyazev.cache.AbstractCacheFactory;
 import ru.clevertec.knyazev.cache.Cache;
 import ru.clevertec.knyazev.cache.impl.DefaultCacheFactory;
+import ru.clevertec.knyazev.data.ServiceDTO;
 import ru.clevertec.knyazev.entity.Person;
+import ru.clevertec.knyazev.pdf.PDFManager;
+import ru.clevertec.knyazev.pdf.impl.ServiceCheckPDFManagerImpl;
 import ru.clevertec.knyazev.util.YAMLParser;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.UUID;
 
 @Configuration
@@ -56,13 +60,32 @@ public class AppConfig {
     }
 
     @Bean
+    PDFProperties pdfProperties(YAMLParser yamlParser) {
+        return PDFProperties.builder()
+                .pdfTemplatePath(yamlParser.getProperty("pdf", "templatePath"))
+                .pdfPath(yamlParser.getProperty("pdf", "resultPath"))
+                .pdfFontPath(yamlParser.getProperty("pdf", "documentFontPath"))
+                .pdfFontEncoding(yamlParser.getProperty("pdf", "documentFontEncoding"))
+                .build();
+    }
+
+
+    @Bean
     AbstractCacheFactory defaultCacheFactory(CacheProperties cacheProperties) {
-        return new DefaultCacheFactory(cacheProperties.getAlgorithm(), cacheProperties.getSize());
+        return new DefaultCacheFactory(cacheProperties.algorithm(), cacheProperties.size());
     }
 
     @Bean
     Cache<UUID, Person> personCache(AbstractCacheFactory defaultCacheFactory) {
         return defaultCacheFactory.initCache();
+    }
+
+    @Bean
+    PDFManager<List<ServiceDTO>> serviceCheckPDFManagerImpl(PDFProperties pdfProperties) {
+        return new ServiceCheckPDFManagerImpl(pdfProperties.pdfTemplatePath(),
+                pdfProperties.pdfPath(),
+                pdfProperties.pdfFontPath(),
+                pdfProperties.pdfFontEncoding());
     }
 
     @Bean
@@ -76,12 +99,12 @@ public class AppConfig {
     @Bean
     DataSource hikariDataSource(DataSourceProperties dataSourceProperties) {
         HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setDriverClassName(dataSourceProperties.getDriverClassName());
-        hikariConfig.setJdbcUrl(dataSourceProperties.getJdbcUrl());
-        hikariConfig.setUsername(dataSourceProperties.getUsername());
-        hikariConfig.setPassword(dataSourceProperties.getPassword());
-        hikariConfig.setMaximumPoolSize(dataSourceProperties.getMaxPoolSize());
-        hikariConfig.setConnectionTimeout(dataSourceProperties.getConnectionTimeout());
+        hikariConfig.setDriverClassName(dataSourceProperties.driverClassName());
+        hikariConfig.setJdbcUrl(dataSourceProperties.jdbcUrl());
+        hikariConfig.setUsername(dataSourceProperties.username());
+        hikariConfig.setPassword(dataSourceProperties.password());
+        hikariConfig.setMaximumPoolSize(dataSourceProperties.maxPoolSize());
+        hikariConfig.setConnectionTimeout(dataSourceProperties.connectionTimeout());
 
         return new HikariDataSource(hikariConfig);
     }

@@ -9,7 +9,7 @@ import java.util.UUID;
 
 /**
  *
- * Represents data access object for Person
+ * Represents data access object for Person entity
  *
  */
 public interface PersonDAO {
