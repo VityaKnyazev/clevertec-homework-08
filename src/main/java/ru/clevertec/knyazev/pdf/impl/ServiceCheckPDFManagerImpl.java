@@ -20,6 +20,20 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class ServiceCheckPDFManagerImpl extends PDFManager<List<ServiceDTO>> {
 
+    private final static String FILENAME_PREFIX = "service-check-";
+    private final static String FILENAME_DATE_TIME_FORMAT_PREFIX = "dd-MM-YYYY HH-mm-ss-SSS";
+    private final static String FILENAME_SUFFIX = ".pdf";
+
+    private final static String TITLE_PARAGRAPH = "Person services check #%s%n";
+    private final static String DATE_TIME_PARAGRAPH = "Date time: %s%n";
+    private final static String DATE_TIME_FORMAT_PARAGRAPH = "dd-MM-YYYY HH:mm:ss";
+    private final static String CHECK_PARAGRAPH = "For person: %s %s%n";
+
+    private final static List<String> DATA_TABLE_COLUMNS = List.of("service name",
+            "service description",
+            "price");
+    private final static String SUM_TABLE_COLUMN = "total:";
+
     private final String pdfTemplatePath;
     private final String pdfPath;
     private final String pdfFontPath;
@@ -32,10 +46,10 @@ public class ServiceCheckPDFManagerImpl extends PDFManager<List<ServiceDTO>> {
      */
     @Override
     protected Document create() {
-        String pdfPathName = pdfPath + File.separator + "service-check-" +
+        String pdfPathName = pdfPath + File.separator + FILENAME_PREFIX +
                 LocalDateTime.now()
-                        .format(DateTimeFormatter.ofPattern("dd-MM-YYYY HH-mm-ss-SSS", Locale.ROOT)) +
-                ".pdf";
+                        .format(DateTimeFormatter.ofPattern(FILENAME_DATE_TIME_FORMAT_PREFIX, Locale.ROOT)) +
+                FILENAME_SUFFIX;
 
         pdfDocumentImpl = new PDFDocumentImpl(pdfTemplatePath,
                 pdfPathName,
@@ -51,28 +65,28 @@ public class ServiceCheckPDFManagerImpl extends PDFManager<List<ServiceDTO>> {
     @Override
     protected Document add(List<ServiceDTO> objectData, Document document) {
         Paragraph titleParagraph = pdfDocumentImpl.createParagraph(
-                String.format("Person services check #%s%n", objectData.get(0).personId().toString()),
+                String.format(TITLE_PARAGRAPH, objectData.get(0).personId().toString()),
                 85f);
         Paragraph dateTimeParagraph = pdfDocumentImpl.createParagraph(
-                String.format("Date time: %s%n", objectData.get(0).localDateTime()
-                        .format(DateTimeFormatter.ofPattern("dd-MM-YYYY HH:mm:ss"))),
+                String.format(DATE_TIME_PARAGRAPH, objectData.get(0).localDateTime()
+                        .format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT_PARAGRAPH))),
                 3f);
         Paragraph checkParagraph = pdfDocumentImpl.createParagraph(
-                String.format("For person: %s %s%n", objectData.get(0).personName().toString(),
-                        objectData.get(0).personSurname().toString()), 3f);
+                String.format(CHECK_PARAGRAPH, objectData.get(0).personName(),
+                        objectData.get(0).personSurname()), 3f);
 
-        Table dataTable = pdfDocumentImpl.createTable(new float[]{150f, 400f, 45f});
-        pdfDocumentImpl.addCell("service name",
+        Table dataTable = pdfDocumentImpl.createTable(new float[]{150f, 400f, 45f}, 3f);
+        pdfDocumentImpl.addCell(DATA_TABLE_COLUMNS.get(0),
                 TextAlignment.CENTER,
                 dataTable);
-        pdfDocumentImpl.addCell("service description",
+        pdfDocumentImpl.addCell(DATA_TABLE_COLUMNS.get(1),
                 TextAlignment.CENTER,
                 dataTable);
-        pdfDocumentImpl.addCell("price",
+        pdfDocumentImpl.addCell(DATA_TABLE_COLUMNS.get(2),
                 TextAlignment.CENTER,
                 dataTable);
 
-        objectData.stream().forEach(serviceDTO -> {
+        objectData.forEach(serviceDTO -> {
             pdfDocumentImpl.addCell(serviceDTO.serviceName(),
                     TextAlignment.LEFT,
                     dataTable);
@@ -84,14 +98,14 @@ public class ServiceCheckPDFManagerImpl extends PDFManager<List<ServiceDTO>> {
                     dataTable);
         });
 
-        Table sumTable = pdfDocumentImpl.createTable(new float[]{495f, 35f});
-        pdfDocumentImpl.addCell("total",
+        Table sumTable = pdfDocumentImpl.createTable(new float[]{495f, 35f}, 3f);
+        pdfDocumentImpl.addCell(SUM_TABLE_COLUMN,
                 TextAlignment.LEFT,
                 sumTable);
         pdfDocumentImpl.addCell(DecimalFormat.getCurrencyInstance()
-                .format(objectData.stream()
-                        .mapToDouble(serviceDTO -> serviceDTO.price().doubleValue())
-                        .sum()),
+                        .format(objectData.stream()
+                                .mapToDouble(serviceDTO -> serviceDTO.price().doubleValue())
+                                .sum()),
                 TextAlignment.CENTER,
                 sumTable);
 

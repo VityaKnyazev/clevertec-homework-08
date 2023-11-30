@@ -10,6 +10,9 @@ ext {
     snakeyamlVersion = '2.1'
 
     itextPDFVersion = '8.0.2'
+
+    assertjVersion = '3.24.2'
+    junitVersion = '5.9.2'
 }
 
 repositories {
@@ -22,8 +25,10 @@ dependencies {
 
     implementation "org.yaml:snakeyaml:$snakeyamlVersion"
 
-    testImplementation platform('org.junit:junit-bom:5.9.1')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation "org.assertj:assertj-core:$assertjVersion"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
 }
 
 java {

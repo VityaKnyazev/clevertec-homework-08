@@ -1,5 +1,6 @@
 package ru.clevertec.knyazev.pdf;
 
+import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
@@ -13,6 +14,8 @@ import com.itextpdf.layout.properties.VerticalAlignment;
  */
 public sealed interface PDFDocumentElements permits AbstractPDFDocument {
 
+    float DEFAULT_FONT_SIZE = 14f;
+
     /**
      *
      * Create paragraph
@@ -23,7 +26,7 @@ public sealed interface PDFDocumentElements permits AbstractPDFDocument {
     default Paragraph createParagraph(String text, float marginTop) {
         Paragraph paragraph = new Paragraph(text);
         paragraph.setMarginTop(marginTop);
-        paragraph.setFontSize(14f);
+        paragraph.setFontSize(DEFAULT_FONT_SIZE);
         return paragraph;
     }
 
@@ -32,14 +35,15 @@ public sealed interface PDFDocumentElements permits AbstractPDFDocument {
      * Create table with column width
      *
      * @param columnWidth column width
+     * @param marginTop margin top ident from previous block
      * @return table with columns
      */
-    default Table createTable(float[] columnWidth) {
+    default Table createTable(float[] columnWidth, float marginTop) {
         Table table = new Table(columnWidth);
         table.setHorizontalAlignment(HorizontalAlignment.CENTER);
         table.setVerticalAlignment(VerticalAlignment.BOTTOM);
-        table.setMarginTop(3f);
-//        table.setBorder(Border.NO_BORDER);
+        table.setMarginTop(marginTop);
+        table.setBorder(Border.NO_BORDER);
 
         return table;
     }
@@ -57,8 +61,8 @@ public sealed interface PDFDocumentElements permits AbstractPDFDocument {
                           TextAlignment textAlignment,
                           Table table) {
         Cell cell = new Cell();
-        cell.add(new Paragraph(cellText).setTextAlignment(textAlignment).setFontSize(10));
-//        cell.setBorder(Border.NO_BORDER);
+        cell.add(new Paragraph(cellText).setTextAlignment(textAlignment).setFontSize(DEFAULT_FONT_SIZE));
+        cell.setBorder(Border.NO_BORDER);
 
         table.addCell(cell);
         return table;
