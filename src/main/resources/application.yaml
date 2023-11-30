@@ -10,6 +10,7 @@ datasource:
 cache:
    algorithm: LFU
    size: 5
+#pdf config
 pdf:
    templatePath: pdf/tmpl/template.pdf
    resultPath: src/main/resources/pdf

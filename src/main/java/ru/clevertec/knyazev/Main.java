@@ -3,14 +3,11 @@ package ru.clevertec.knyazev;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.clevertec.knyazev.config.AppConfig;
-import ru.clevertec.knyazev.dao.ServiceDAO;
 import ru.clevertec.knyazev.dao.exception.DAOException;
-import ru.clevertec.knyazev.data.PersonDTO;
-import ru.clevertec.knyazev.entity.Service;
-import ru.clevertec.knyazev.service.PersonService;
+import ru.clevertec.knyazev.pdf.exception.PDFDocumentException;
+import ru.clevertec.knyazev.service.GovernmentService;
 import ru.clevertec.knyazev.service.exception.ServiceException;
 
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -20,34 +17,18 @@ public class Main {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
         log.debug("Spring context started");
 
-        PersonService personServiceImpl = context.getBean("personServiceImpl", PersonService.class);
+        GovernmentService governmentServiceImpl = context.getBean("governmentServiceImpl",
+                                                                  GovernmentService.class);
 
-        PersonDTO personDTO = PersonDTO.builder()
-                .name("Kolya")
-                .surname("Petrov")
-                .email("petyaI@mail.ru")
-                .citizenship("Russia")
-                .age(34)
-                .build();
+        UUID personId = UUID.fromString("f0a7c9a8-0a0a-4f1a-9c0d-9a0f9a0f9a0f");
 
         try {
-            PersonDTO savedPersonDTO = personServiceImpl.add(personDTO);
+            String savedPDFAbsolutePath = governmentServiceImpl.getAbsolutePathByPersonId(personId);
 
-            log.info("Person DTO from cache: {}", personServiceImpl.get(savedPersonDTO.id()).toXML());
-
-            PersonDTO updatingPersonDTO = PersonDTO.builder()
-                    .id(savedPersonDTO.id())
-                    .name(savedPersonDTO.name())
-                    .surname("Sidorov")
-                    .email(savedPersonDTO.email())
-                    .citizenship(savedPersonDTO.citizenship())
-                    .age(savedPersonDTO.age())
-                    .build();
-
-            personServiceImpl.update(updatingPersonDTO);
-
-            personServiceImpl.remove(updatingPersonDTO.id());
-        } catch (DAOException | ServiceException | IllegalArgumentException e) {
+            log.info("Saved pdf check about person services with id={} here:{}",
+                    personId,
+                    savedPDFAbsolutePath);
+        } catch (DAOException | ServiceException | PDFDocumentException | IllegalArgumentException e) {
             log.error(e.getMessage(), e);
         }
     }

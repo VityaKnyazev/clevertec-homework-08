@@ -1,21 +1,30 @@
 package ru.clevertec.knyazev.config;
 
 import lombok.Builder;
-import lombok.Data;
 
-@Data
+/**
+ *
+ * Represents datasource connection properties from application property file
+ *
+ * @param driverClassName driver class name
+ * @param jdbcUrl JDBC url
+ * @param username username
+ * @param password password
+ * @param maxPoolSize max pool size
+ * @param connectionTimeout connection timeout
+ */
 @Builder
-public class DataSourceProperties {
+public record DataSourceProperties (
 
-    private String driverClassName;
+    String driverClassName,
 
-    private String jdbcUrl;
+    String jdbcUrl,
 
-    private String username;
+    String username,
 
-    private String password;
+    String password,
 
-    private Integer maxPoolSize;
+    Integer maxPoolSize,
 
-    private Long connectionTimeout;
-}
+    Long connectionTimeout
+) {}
